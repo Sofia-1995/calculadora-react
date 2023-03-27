@@ -28,13 +28,19 @@ const classes = {
     gap: 1,
     mb: 1,
   },
+  historial: {
+    color: "#808080",
+  },
+  cuenta: {
+    textAlign: "right",
+  },
 };
 
 function App() {
   const [operacion, setOperacion] = useState(null);
   const [numA, setNumA] = useState("");
   const [numB, setNumB] = useState("");
-  const [resultado, setResultado] = useState("");
+  const [historial, setHistorial] = useState([]);
 
   const handleClickNum = (num) => () => {
     if (operacion) {
@@ -45,7 +51,7 @@ function App() {
   };
 
   const handleClickOperacion = (nuevaOperacion) => () => {
-    if (!operacion) {
+    if (!operacion && numA) {
       setOperacion(nuevaOperacion);
     }
   };
@@ -56,14 +62,18 @@ function App() {
       const b = parseFloat(numB);
 
       const operaciones = {
-        "+": (a, b) => setResultado(a + b),
-        "-": (a, b) => setResultado(a - b),
-        x: (a, b) => setResultado(a * b),
-        "/": (a, b) => setResultado(a / b),
-        "%": (a, b) => setResultado((a * b) / 100),
+        "+": (a, b) => a + b,
+        "-": (a, b) => a - b,
+        x: (a, b) => a * b,
+        "/": (a, b) => a / b,
+        "%": (a, b) => (a * b) / 100,
       };
 
-      operaciones[operacion](a, b);
+      const rdo = operaciones[operacion](a, b);
+      setHistorial([...historial, `${numA} ${operacion} ${numB} = ${rdo}`]);
+      setOperacion(null);
+      setNumA("");
+      setNumB("");
     }
   };
 
@@ -79,7 +89,6 @@ function App() {
     setOperacion(null);
     setNumA("");
     setNumB("");
-    setResultado("");
   };
 
   const handleClickMasMenos = () => {
@@ -91,6 +100,10 @@ function App() {
       else setNumA("-" + numA);
     }
   };
+
+  console.log({
+    historial,
+  });
 
   return (
     <>
@@ -106,7 +119,14 @@ function App() {
       <Box sx={classes.boxContainer}>
         <Box sx={classes.boxWrapper}>
           <Box sx={classes.boxWhite}>
-            {numA} {operacion} {numB} {resultado}
+            {historial.map((item, index) => (
+              <Typography sx={classes.historial} variant="body1" key={index}>
+                {item}
+              </Typography>
+            ))}
+            <Typography sx={classes.cuenta} variant="h4">
+              {numA} {operacion} {numB}
+            </Typography>
           </Box>
           <Box>
             <Box sx={classes.boxbuttonRow}>
