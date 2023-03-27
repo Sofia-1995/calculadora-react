@@ -51,17 +51,44 @@ function App() {
   };
 
   const handleClickIgual = () => {
-    if (operacion === "+") {
-      setResultado(parseInt(numA) + parseInt(numB));
+    if ((operacion, numA, numB)) {
+      const a = parseFloat(numA);
+      const b = parseFloat(numB);
+
+      const operaciones = {
+        "+": (a, b) => setResultado(a + b),
+        "-": (a, b) => setResultado(a - b),
+        x: (a, b) => setResultado(a * b),
+        "/": (a, b) => setResultado(a / b),
+        "%": (a, b) => setResultado((a * b) / 100),
+      };
+
+      operaciones[operacion](a, b);
     }
-    if (operacion === "-") {
-      setResultado(parseInt(numA) - parseInt(numB));
+  };
+
+  const handleClickPunto = () => {
+    if (operacion) {
+      if (!numB.includes(".")) setNumB(numB + ".");
+    } else {
+      if (!numA.includes(".")) setNumA(numA + ".");
     }
-    if (operacion === "x") {
-      setResultado(parseInt(numA) * parseInt(numB));
-    }
-    if (operacion === "/") {
-      setResultado(parseInt(numA) / parseInt(numB));
+  };
+
+  const handleClickBorrar = () => {
+    setOperacion(null);
+    setNumA("");
+    setNumB("");
+    setResultado("");
+  };
+
+  const handleClickMasMenos = () => {
+    if (operacion) {
+      if (numB.includes("-")) setNumB(numB.slice(1));
+      else setNumB("-" + numB);
+    } else {
+      if (numA.includes("-")) setNumA(numA.slice(1));
+      else setNumA("-" + numA);
     }
   };
 
@@ -83,9 +110,15 @@ function App() {
           </Box>
           <Box>
             <Box sx={classes.boxbuttonRow}>
-              <Button variant="contained">AC</Button>
-              <Button variant="contained">+/-</Button>
-              <Button variant="contained">%</Button>
+              <Button onClick={handleClickBorrar} variant="contained">
+                AC
+              </Button>
+              <Button onClick={handleClickMasMenos} variant="contained">
+                +/-
+              </Button>
+              <Button onClick={handleClickOperacion("%")} variant="contained">
+                %
+              </Button>
               <Button onClick={handleClickOperacion("/")} variant="contained">
                 /
               </Button>
@@ -140,7 +173,9 @@ function App() {
               >
                 0
               </Button>
-              <Button variant="contained">.</Button>
+              <Button onClick={handleClickPunto} variant="contained">
+                .
+              </Button>
               <Button onClick={handleClickIgual} variant="contained">
                 =
               </Button>
